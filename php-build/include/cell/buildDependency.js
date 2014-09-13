@@ -60,7 +60,7 @@ cell.prototype.buildDependency = function(){
                                 calx.sheetRegistry[sheetIdentifier].registerDependant(this.sheet);
                                 this.sheet.registerDependency(calx.sheetRegistry[sheetIdentifier]);
                             }else{
-                                console.log('#'+sheetId+' does not exist');
+                                //console.log('#'+sheetId+' does not exist');
                             }
 
                             for(j in dependencies){
@@ -86,7 +86,7 @@ cell.prototype.buildDependency = function(){
                                 calx.sheetRegistry[sheetIdentifier].registerDependant(this.sheet);
                                 this.sheet.registerDependency(calx.sheetRegistry[sheetIdentifier]);
                             }else{
-                                console.log('#'+sheetId+' does not exist');
+                                //console.log('#'+sheetId+' does not exist');
 
                             }
 

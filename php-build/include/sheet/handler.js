@@ -140,3 +140,12 @@ sheet.prototype.registerDependant = function(dep){
         this.dependant[dep.identifier] = dep;
     }
 };
+
+sheet.prototype.isCalculated = function(){
+    return this.calculated;
+};
+
+sheet.prototype.setCalculated = function(calculated){
+    calculated = (typeof(calculated) == 'undefined') ? true : calculated;
+    this.calculated = calculated;
+};

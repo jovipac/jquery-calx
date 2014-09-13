@@ -12,6 +12,12 @@ sheet.prototype.init = function(){
         sheet.registerCell($cell);
     });
 
-    //sheet.buildCellDependency();
+    sheet.buildCellDependency();
     sheet.attachEvent();
+
+    if(this.config.autoCalculate){
+        //console.log('sheet[#'+this.elementId+'] : autocalculating the sheet');
+        this.calculate();
+        this.renderComputedValue();
+    }
 };
