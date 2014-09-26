@@ -19,48 +19,6 @@ sheet.prototype.getCellRangeValue = function(addressStart, addressStop){
     return cellRangeValue;
 };
 
-sheet.prototype.getRemoteCellRangeValue = function(sheet, addressStart, addressStop){
-
-    var identifier = $(sheet).attr('data-calx-identifier');
-
-    if(!identifier || typeof(calx.sheetRegistry[identifier]) == 'undefined'){
-        return false;
-    }
-
-    return calx.sheetRegistry[identifier].getCellRangeValue(addressStart, addressStop);
-};
-
-sheet.prototype.getRemoteCellValue = function(sheet, address){
-    var identifier = $(sheet).attr('data-calx-identifier');
-
-    if(!identifier || typeof(calx.sheetRegistry[identifier]) == 'undefined'){
-        return false;
-    }
-
-    return calx.sheetRegistry[identifier].getCellValue(address);
-};
-
-sheet.prototype.getRemoteCellRange = function(sheet, addressStart, addressStop){
-
-    var identifier = $(sheet).attr('data-calx-identifier');
-
-    if(!identifier || typeof(calx.sheetRegistry[identifier]) == 'undefined'){
-        return false;
-    }
-
-    return calx.sheetRegistry[identifier].getCellRange(addressStart, addressStop);
-};
-
-sheet.prototype.getRemoteCell = function(sheet, address){
-    var identifier = $(sheet).attr('data-calx-identifier');
-
-    if(!identifier || typeof(calx.sheetRegistry[identifier]) == 'undefined'){
-        return false;
-    }
-
-    return calx.sheetRegistry[identifier].getCell(address);
-};
-
 sheet.prototype.callFunction = function(functionName, params){
     var category, func;
 
@@ -127,25 +85,4 @@ sheet.prototype.comparator = {
 
 sheet.prototype.obj = {
     type : 'cell'
-};
-
-sheet.prototype.registerDependency = function(dep){
-    if(typeof(this.dependencies[dep.identifier]) == 'undefined'){
-        this.dependencies[dep.identifier] = dep;
-    }
-};
-
-sheet.prototype.registerDependant = function(dep){
-    if(typeof(this.dependant[dep.identifier]) == 'undefined'){
-        this.dependant[dep.identifier] = dep;
-    }
-};
-
-sheet.prototype.isCalculated = function(){
-    return this.calculated;
-};
-
-sheet.prototype.setCalculated = function(calculated){
-    calculated = (typeof(calculated) == 'undefined') ? true : calculated;
-    this.calculated = calculated;
 };

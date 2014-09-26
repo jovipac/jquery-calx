@@ -16,9 +16,6 @@
         this.config       = $.extend({}, defaultConfig, config);
         this.counter      = 1;
         this.elementId    = this.el.attr('id');
-        this.dependant    = {};
-        this.dependencies = {};
-        this.calculated   = false;
 
         this.init();
     };

@@ -4,13 +4,10 @@
  */
 cell.prototype.buildDependency = function(){
     var pattern = {
-            remoteCellRange : /\#[A-Za-z0-9_]+\s*!\s*[A-Za-z]+[0-9]+\s*:\s*[A-Za-z]+[0-9]+/g,
-            remoteCell      : /\#[A-Za-z0-9_]+\s*!\s*[A-Za-z]+[0-9]+/g,
             cellRange       : /[A-Za-z]+[0-9]+\s*:\s*[A-Za-z]+[0-9]+/g,
             cell            : /[A-Z]+[0-9]+/g
         },
         formula     = this.formula,
-        sheetKey    = '#'+this.sheet.el.attr('id'),
         cellAddress = this.address,
         dependencies,
         a, i, j, key,
@@ -19,19 +16,13 @@ cell.prototype.buildDependency = function(){
         cellStop,
         cellPart,
         cellObject,
-        cellMatch,
-        sheetId,
-        sheetIdentifier;
+        cellMatch;
+
 
     /** clear up the dependant and dependency reference */
     for(a in this.dependencies){
         /** if not remote cell */
-        if(a.indexOf('#') === -1){
-            this.dependencies[a].removeDependant(cellAddress);
-        }else{
-            this.dependencies[a].removeDependant(sheetKey+'!'+cellAddress);
-        }
-
+        this.dependencies[a].removeDependant(cellAddress);
         delete this.dependencies[a];
     }
 
@@ -45,59 +36,6 @@ cell.prototype.buildDependency = function(){
 
             if(null !== cellMatch){
                 switch(a){
-                    case "remoteCellRange":
-                        for(i = 0; i < cellMatch.length; i++){
-                            formulaPart = cellMatch[i].split('!');
-                            sheetId     = $.trim(formulaPart[0]);
-                            cellPart    = formulaPart[1].split(':');
-                            cellStart   = $.trim(cellPart[0]);
-                            cellStop    = $.trim(cellPart[1]);
-
-                            dependencies = this.sheet.getRemoteCellRange(sheetId, cellStart, cellStop);
-                            sheetIdentifier = $(sheetId).attr('data-calx-identifier');
-
-                            if(typeof(sheetIdentifier) !='undefined' && typeof(calx.sheetRegistry[sheetIdentifier]) != 'undefined'){
-                                calx.sheetRegistry[sheetIdentifier].registerDependant(this.sheet);
-                                this.sheet.registerDependency(calx.sheetRegistry[sheetIdentifier]);
-                            }else{
-                                //console.log('#'+sheetId+' does not exist');
-                            }
-
-                            for(j in dependencies){
-                                key = sheetId+'!'+j;
-                                if(typeof(this.dependencies[key]) == 'undefined' && false !== dependencies[j]){
-                                    this.dependencies[key] = dependencies[j];
-                                    dependencies[j].registerDependant(sheetKey+'!'+this.getAddress(), this);
-                                }
-                            }
-                        }
-                        break;
-
-                    case "remoteCell":
-                        for(i = 0; i < cellMatch.length; i++){
-                            formulaPart = cellMatch[i].split('!');
-                            sheetId     = $.trim(formulaPart[0]);
-                            cellPart    = $.trim(formulaPart[1]);
-
-                            dependencies = this.sheet.getRemoteCell(sheetId, cellPart);
-                            sheetIdentifier = $(sheetId).attr('data-calx-identifier');
-
-                            if(typeof(sheetIdentifier) !='undefined' && typeof(calx.sheetRegistry[sheetIdentifier]) != 'undefined'){
-                                calx.sheetRegistry[sheetIdentifier].registerDependant(this.sheet);
-                                this.sheet.registerDependency(calx.sheetRegistry[sheetIdentifier]);
-                            }else{
-                                //console.log('#'+sheetId+' does not exist');
-
-                            }
-
-                            key = sheetId+'!'+cellPart;
-                            if(typeof(this.dependencies[key]) == 'undefined' && false !== dependencies){
-                                this.dependencies[key] = dependencies;
-                                dependencies.registerDependant(sheetKey+'!'+this.getAddress(), this);
-
-                            }
-                        }
-                        break;
 
                     case "cellRange":
                         for(i = 0; i < cellMatch.length; i++){
