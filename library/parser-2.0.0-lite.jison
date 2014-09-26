@@ -5,24 +5,12 @@
 \s+                                 {/* skip whitespace */}
 '"'("\\"["]|[^"])*'"'               {return 'STRING';}
 "'"('\\'[']|[^'])*"'"               {return 'STRING';}
-'#'[A-Za-z0-9_]+                    {return 'SHEET';}
 [A-Za-z]{1,}[A-Za-z_0-9]+(?=[(])    {return 'FUNCTION';}
 ([0]?[1-9]|1[0-2])[:][0-5][0-9]([:][0-5][0-9])?[ ]?(AM|am|aM|Am|PM|pm|pM|Pm)
                                     {return 'TIME_AMPM';}
 ([0]?[0-9]|1[0-9]|2[0-3])[:][0-5][0-9]([:][0-5][0-9])?
                                     {return 'TIME_24';}
-[A-Za-z0-9_]+'>'[A-Za-z0-9_]+
-%{
-    if (sheet.obj.type == 'cell') return 'SHEET';
-    return 'VARIABLE';
 
-%}
-'$'[A-Za-z]+'$'[0-9]+
-%{
-    if (sheet.obj.type == 'cell') return 'FIXEDCELL';
-    return 'VARIABLE';
-
-%}
 [A-Za-z]+[0-9]+
 %{
     if (sheet.obj.type == 'cell') return 'CELL';
@@ -55,7 +43,6 @@
 "E"                                 {return 'E';}
 '"'                                 {return '"';}
 "'"                                 {return "'";}
-"!"                                 {return "!";}
 "="                                 {return '=';}
 "%"                                 {return '%';}
 [#]                                 {return '#';}
@@ -112,7 +99,7 @@ e :
         }
     | e '+' e
         {
-            $$ = $1 + $3;
+            $$ = formula.math.SUM($1, $3);
         }
     | '(' e ')'
         {$$ = $2 * 1;}
@@ -122,15 +109,15 @@ e :
         }
     | e '<' '=' e
         {
-            $$ = sheet.comparator.lessEqual($1, $3);
+            $$ = sheet.comparator.lessEqual($1, $4);
         }
     | e '>' '=' e
         {
-            $$ = sheet.comparator.greaterEqual($1, $3);
+            $$ = sheet.comparator.greaterEqual($1, $4);
         }
     | e '<' '>' e
         {
-            $$ = ($1 * 1) != ($4 * 1);
+            $$ = sheet.comparator.notEqual($1, $4);
         }
     | e NOT e
         {
@@ -146,19 +133,19 @@ e :
         }
     | e '-' e
         {
-            $$ = ($1 * 1) - ($3 * 1);
+            $$ = formula.math.SUBTRACT($1, $3);
         }
     | e '*' e
         {
-            $$ = ($1 * 1) * ($3 * 1);
+            $$ = formula.math.MULTIPLY($1, $3);
         }
     | e '/' e
         {
-            $$ = ($1 * 1) / ($3 * 1);
+            $$ = formula.math.DIVIDE($1, $3);
         }
     | e '^' e
         {
-            $$ = Math.pow(($1 * 1), ($3 * 1));
+            $$ = formula.math.POWER($1, $3);
         }
     | '-' e
         {
@@ -204,17 +191,9 @@ cell :
         {
             $$ = sheet.getCellRangeValue($1, $3);
         }
-    | SHEET '>' CELL
-        {
-            $$ = sheet.getRemoteCellValue($1, $3);
-        }
-    | SHEET '>' CELL ':' CELL
-        {
-            $$ = sheet.getRemoteCellRangeValue($1, $3, $5);
-        }
 ;
 
-expseq : 
+expseq :
     e
         {
             $$ = [$1];
