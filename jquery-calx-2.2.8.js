@@ -5935,7 +5935,7 @@ logical : {
         if(typeof(numeral) == 'undefined'){
             return '#NAME?';
         }
-        return numeral().unformat(text);
+        return numeral(text).value();
     }
 },
     trigonometry:{
@@ -8419,7 +8419,7 @@ cell.fx.init = function(){
 
     //console.log('cell[#'+this.sheet.elementId+'!'+$address+'] : Initializing the cell');
     if($format && typeof(numeral) != 'undefined' && $.trim($value) !== ''){
-        var rawValue = numeral().unformat($value);
+        var rawValue = numeral($value).value();
 
         if($format.indexOf('%') > -1 && ($value).indexOf('%') == -1){
             rawValue = rawValue/100;
@@ -8840,7 +8840,7 @@ cell.fx.resyncValue = function(){
         }
 
         if(this.format && typeof(numeral) != 'undefined' && $.trim(elValue) !== ''){
-            var rawValue = numeral().unformat(elValue);
+            var rawValue = numeral(elValue).value();
 
             if(this.format.indexOf('%') > -1 && (elValue).indexOf('%') == -1){
                 rawValue = rawValue/100;
@@ -9810,7 +9810,7 @@ sheet.fx.attachEvent = function(){
                         });
         }else{
             if(cellFormat && typeof(numeral) != 'undefined' && $.trim(newVal) !== ''){
-                rawValue = numeral().unformat(newVal);
+                rawValue = numeral(newVal).value();
 
                 if(cellFormat.indexOf('%') > -1 && (newVal).indexOf('%') == -1){
                     rawValue = rawValue/100;
